@@ -1,2 +1,2 @@
 # CCSkynet
-cocos, skynet 融合的框架
+cocos, skynet 通信的例子
