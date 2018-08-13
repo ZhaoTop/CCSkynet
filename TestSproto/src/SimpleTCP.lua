@@ -80,7 +80,7 @@ function SimpleTCP:connect()
 
 	self.stat = SimpleTCP.STAT_CONNECTING
 	self.callback(SimpleTCP.EVENT_CONNECTING)
-	self.connectingTime = 0
+	self.connectingTime = os.time()
 	self:_connectAndCheck()
 
 	local update = function ()
@@ -167,10 +167,12 @@ function SimpleTCP:_update(dt)
 			self.callback(SimpleTCP.EVENT_CONNECTED)
 			return
 		else
-			self.connectingTime = self.connectingTime + dt
-			if self.connectingTime >= SimpleTCP.CONNECT_TIMEOUT then
+			local timeInterval = os.time() - self.connectingTime
+			--self.connectingTime = self.connectingTime + dt
+			--if self.connectingTime >= SimpleTCP.CONNECT_TIMEOUT then
+			if timeInterval >= SimpleTCP.CONNECT_TIMEOUT then
 				-- stop scheduler
-				scheduler.unscheduleGlobal(self.globalUpdateHandler)
+                scheduler:unscheduleScriptEntry(self.globalUpdateHandler)
 				self.globalUpdateHandler = nil
 				-- notification
 				self.stat = SimpleTCP.STAT_FAILED
